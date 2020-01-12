@@ -130,6 +130,8 @@ module nodeutil {
 			if (!isForcusableElement(e))
 				return false;
 			const rect = e.getBoundingClientRect();
+			if (baseElement === e)
+				return false;
 			if (baseRect.left <= rect.left)
 				return item != null;
 			// 基準要素よりも上の要素がみつかった
@@ -173,6 +175,8 @@ module nodeutil {
 			if (!nodeutil.isForcusableElement(e))
 				return false;
 			const rect = e.getBoundingClientRect();
+			if (baseElement === e)
+				return false;
 			if (baseRect.y < rect.y)
 				return item != null;
 			// 基準要素よりも上の要素がみつかった
@@ -212,6 +216,8 @@ module nodeutil {
 			if (!isForcusableElement(e))
 				return false;
 			const rect = e.getBoundingClientRect();
+			if (baseElement === e)
+				return false;
 			if (rect.top < baseRect.top)
 				return false;
 			// 基準要素よりも下の要素がみつかった
@@ -277,6 +283,8 @@ module nodeutil {
 			if (!nodeutil.isForcusableElement(e))
 				return false;
 			const rect = e.getBoundingClientRect();
+			if (baseElement === e)
+				return false;
 			if (rect.left < baseRect.left)
 				return false;
 			if (rect.top < baseRect.top)
