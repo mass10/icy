@@ -20,7 +20,7 @@ module nodeutil {
 			return true;
 
 		if (e.hasChildNodes()) {
-			for (let i = 0; i < e.childElementCount; i++)  {
+			for (let i = 0; i < e.childElementCount; i++) {
 				const child = e.children[i];
 				if (searchElement(child, callback))
 					return true;
@@ -105,7 +105,7 @@ module nodeutil {
 			return;
 		const rect = e.getBoundingClientRect();
 		console.log("[TRACE] Focus changed. type: [%s], name: [%s], id: [%s], top: [%s], left: [%s]",
-				e.nodeName, e.attributes["name"], e.id, rect.top, rect.left);
+			e.nodeName, e.attributes["name"], e.id, rect.top, rect.left);
 	}
 
 	export function getLeftElement(baseElement: Element | null): Element | null {
@@ -114,7 +114,7 @@ module nodeutil {
 		const baseRect = baseElement.getBoundingClientRect();
 
 		console.log("[TRACE] 基準要素 type: [%s], name: [%s], id: [%s], top: [%s], left: [%s]",
-				baseElement.nodeName, baseElement.attributes["name"], baseElement.id, baseRect.top, baseRect.left);
+			baseElement.nodeName, baseElement.attributes["name"], baseElement.id, baseRect.top, baseRect.left);
 
 		// 同じ階層の要素を簡易検索
 		{
@@ -136,7 +136,7 @@ module nodeutil {
 				return item != null;
 			// 基準要素よりも上の要素がみつかった
 			console.log("[TRACE] element found. type: [%s], name: [%s], id: [%s], top: [%s], left: [%s]",
-					e.nodeName, e.attributes["name"], e.id, rect.top, rect.left);
+				e.nodeName, e.attributes["name"], e.id, rect.top, rect.left);
 			item = e;
 			// continue.
 			return false;
@@ -159,7 +159,7 @@ module nodeutil {
 		const baseRect = baseElement.getBoundingClientRect();
 
 		console.log("[TRACE] 基準要素 type: [%s], name: [%s], id: [%s], top: [%s], left: [%s]",
-				baseElement.nodeName, baseElement.attributes["name"], baseElement.id, baseRect.top, baseRect.left);
+			baseElement.nodeName, baseElement.attributes["name"], baseElement.id, baseRect.top, baseRect.left);
 
 		// 同じ階層の要素を簡易検索
 		{
@@ -181,7 +181,7 @@ module nodeutil {
 				return item != null;
 			// 基準要素よりも上の要素がみつかった
 			console.log("[TRACE] element found. type: [%s], name: [%s], id: [%s], top: [%s], left: [%s]",
-					e.nodeName, e.attributes["name"], e.id, rect.top, rect.left);
+				e.nodeName, e.attributes["name"], e.id, rect.top, rect.left);
 			item = e;
 			// continue.
 			return false;
@@ -200,7 +200,7 @@ module nodeutil {
 		const baseRect = baseElement.getBoundingClientRect();
 
 		console.log("[TRACE] 基準要素 type: [%s], name: [%s], id: [%s], top: [%s], left: [%s]",
-				baseElement.nodeName, baseElement.attributes["name"], baseElement.id, baseRect.top, baseRect.left);
+			baseElement.nodeName, baseElement.attributes["name"], baseElement.id, baseRect.top, baseRect.left);
 
 		// 同じ階層の要素を簡易検索
 		{
@@ -222,7 +222,7 @@ module nodeutil {
 				return false;
 			// 基準要素よりも下の要素がみつかった
 			console.log("[TRACE] element found. type: [%s], name: [%s], id: [%s], top: [%s], left: [%s]",
-					e.nodeName, e.attributes["name"], e.id, rect.top, rect.left);
+				e.nodeName, e.attributes["name"], e.id, rect.top, rect.left);
 			item = e;
 			// stop.
 			return true;
@@ -236,27 +236,27 @@ module nodeutil {
 	}
 
 	function findPreviousSiblingControl(e: Element | null): Element | null {
-		console.log("[TRACE] 簡易検索");
 		while (true) {
 			e = e.previousElementSibling;
 			if (!e)
 				break;
-			console.log("[TRACE] 簡易検索(<): ", e);
-			if (isForcusableElement(e))
+			if (isForcusableElement(e)) {
+				console.log("[TRACE] 簡易検索(<): ", e);
 				return e;
+			}
 		}
 		return null;
 	}
 
 	function findNextSiblingControl(e: Element | null): Element | null {
-		console.log("[TRACE] 簡易検索");
 		while (true) {
 			e = e.nextElementSibling;
 			if (!e)
 				break;
-			console.log("[TRACE] 簡易検索(>): ", e);
-			if (isForcusableElement(e))
+			if (isForcusableElement(e)) {
+				console.log("[TRACE] 簡易検索(>): ", e);
 				return e;
+			}
 		}
 		return null;
 	}
@@ -267,7 +267,7 @@ module nodeutil {
 		const baseRect = baseElement.getBoundingClientRect();
 
 		console.log("[TRACE] 基準要素 type: [%s], name: [%s], id: [%s], top: [%s], left: [%s]",
-				baseElement.nodeName, baseElement.attributes["name"], baseElement.id, baseRect.top, baseRect.left);
+			baseElement.nodeName, baseElement.attributes["name"], baseElement.id, baseRect.top, baseRect.left);
 
 		// 同じ階層の要素を簡易検索
 		{
@@ -291,7 +291,7 @@ module nodeutil {
 				return false;
 			// 基準要素よりも右下の要素がみつかった
 			console.log("[TRACE] element found. type: [%s], name: [%s], id: [%s], top: [%s], left: [%s]",
-					e.nodeName, e.attributes["name"], e.id, rect.top, rect.left);
+				e.nodeName, e.attributes["name"], e.id, rect.top, rect.left);
 			item = e;
 			// stop.
 			return true;
@@ -360,7 +360,7 @@ module ttapplication {
 
 		if (window.onkeydown) {
 			const original_operation = window.onkeydown;
-			window.onkeydown = function(this: GlobalEventHandlers, ev: KeyboardEvent) {
+			window.onkeydown = function (this: GlobalEventHandlers, ev: KeyboardEvent) {
 				if (original_operation)
 					original_operation.apply(this, ev);
 				_onkeydown.apply(this, ev);
