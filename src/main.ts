@@ -124,15 +124,18 @@ module util {
 		return element;
 	}
 
+	/**
+	 * e にフォーカスを移動します。
+	 * @param e 要素 
+	 */
 	export function setFocus(e: Element): void {
 
-		const options: FocusOptions = { preventScroll: false };
 		if (isInputElement(e))
-			e.focus(options);
+			e.focus({ preventScroll: false });
 		else if (isTextareaElement(e))
-			e.focus(options);
+			e.focus({ preventScroll: false });
 		else if (isAnchorElement(e))
-			e.focus(options);
+			e.focus({ preventScroll: false });
 		else
 			return;
 		const rect = e.getBoundingClientRect();
@@ -141,45 +144,78 @@ module util {
 	}
 }
 
-type SearchCallback = (arg1: Element | null) => boolean;
+function getLeftElement(baseElement: Element | null): Element | null {
 
-function getPreviousElement(baseElement: Element | null): Element | null {
 	// 基準要素の位置
 	const baseRect = baseElement.getBoundingClientRect();
+
 	console.log("[TRACE] 基準要素 type: [%s], name: [%s], id: [%s], top: [%s], left: [%s]",
 			baseElement.nodeName, baseElement.attributes["name"], baseElement.id, baseRect.top, baseRect.left);
+
 	// みつかった要素
 	let item: Element = null;
 	// コールバック
-	const handler: SearchCallback = (e: Element | null): boolean => {
+	const handler: nodeutil.SearchCallback = (e: Element | null): boolean => {
 		if (!util.isForcusableElement(e))
 			return false;
 		const rect = e.getBoundingClientRect();
-		if (baseRect.y <= rect.y) {
-			if (item)
-				return true;
-			return false;
-		}
+		if (baseRect.left <= rect.left)
+			return item != null;
 		// 基準要素よりも上の要素がみつかった
 		console.log("[TRACE] element found. type: [%s], name: [%s], id: [%s], top: [%s], left: [%s]",
 				e.nodeName, e.attributes["name"], e.id, rect.top, rect.left);
 		item = e;
+		// continue.
 		return false;
 	}
+
+	// 要素を検索します。
+	nodeutil.searchElement(window.document.body, handler);
+	return item;
+}
+
+function getPreviousElement(baseElement: Element | null): Element | null {
+
+	// 基準要素の位置
+	const baseRect = baseElement.getBoundingClientRect();
+
+	console.log("[TRACE] 基準要素 type: [%s], name: [%s], id: [%s], top: [%s], left: [%s]",
+			baseElement.nodeName, baseElement.attributes["name"], baseElement.id, baseRect.top, baseRect.left);
+
+	// みつかった要素
+	let item: Element = null;
+	// コールバック
+	const handler: nodeutil.SearchCallback = (e: Element | null): boolean => {
+		if (!util.isForcusableElement(e))
+			return false;
+		const rect = e.getBoundingClientRect();
+		if (baseRect.y <= rect.y)
+			return item != null;
+		// 基準要素よりも上の要素がみつかった
+		console.log("[TRACE] element found. type: [%s], name: [%s], id: [%s], top: [%s], left: [%s]",
+				e.nodeName, e.attributes["name"], e.id, rect.top, rect.left);
+		item = e;
+		// continue.
+		return false;
+	}
+
 	// 要素を検索します。
 	nodeutil.searchElement(window.document.body, handler);
 	return item;
 }
 
 function getNextElement(baseElement: Element | null): Element | null {
+
 	// 基準要素の位置
 	const baseRect = baseElement.getBoundingClientRect();
+
 	console.log("[TRACE] 基準要素 type: [%s], name: [%s], id: [%s], top: [%s], left: [%s]",
 			baseElement.nodeName, baseElement.attributes["name"], baseElement.id, baseRect.top, baseRect.left);
+
 	// みつかった要素
 	let item: Element = null;
 	// コールバック
-	const handler: SearchCallback = (e: Element | null): boolean => {
+	const handler: nodeutil.SearchCallback = (e: Element | null): boolean => {
 		if (!util.isForcusableElement(e))
 			return false;
 		const rect = e.getBoundingClientRect();
@@ -192,6 +228,37 @@ function getNextElement(baseElement: Element | null): Element | null {
 		// stop.
 		return true;
 	}
+
+	// 要素を検索します。
+	nodeutil.searchElement(window.document.body, handler);
+	return item;
+}
+
+function getRightElement(baseElement: Element | null): Element | null {
+
+	// 基準要素の位置
+	const baseRect = baseElement.getBoundingClientRect();
+
+	console.log("[TRACE] 基準要素 type: [%s], name: [%s], id: [%s], top: [%s], left: [%s]",
+			baseElement.nodeName, baseElement.attributes["name"], baseElement.id, baseRect.top, baseRect.left);
+
+	// みつかった要素
+	let item: Element = null;
+	// コールバック
+	const handler: nodeutil.SearchCallback = (e: Element | null): boolean => {
+		if (!util.isForcusableElement(e))
+			return false;
+		const rect = e.getBoundingClientRect();
+		if (rect.left <= baseRect.left)
+			return false;
+		// 基準要素よりも下の要素がみつかった
+		console.log("[TRACE] element found. type: [%s], name: [%s], id: [%s], top: [%s], left: [%s]",
+				e.nodeName, e.attributes["name"], e.id, rect.top, rect.left);
+		item = e;
+		// stop.
+		return true;
+	}
+
 	// 要素を検索します。
 	nodeutil.searchElement(window.document.body, handler);
 	return item;
