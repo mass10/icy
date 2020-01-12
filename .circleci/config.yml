@@ -11,7 +11,7 @@ jobs:
             - node/with-cache:
                 dir: ~/.npm
                 steps:
-                    - run: yarn npm ci
+                    - run: yarn install && yarn npm ci
             - run: yarn npm test
 workflows:
     "My Workflow":
