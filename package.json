@@ -1,8 +1,8 @@
 {
-  "name": "techtouch-ui-surface",
-  "version": "1.0.0",
-  "main": "index.js",
-  "repository": "git@github.com:mass10/techtouch-ui-surface.git",
+  "name": "icy",
+  "version": "0.1.0",
+  "main": "dist/main.js",
+  "repository": "git@github.com:mass10/icy.git",
   "author": "Irisawa Masaru <mass10.github@gmail.com>",
   "license": "MIT",
   "dependencies": {
