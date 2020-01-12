@@ -1,48 +1,14 @@
-module dateutil {
-
-	export function rpad(s: string, len: number): string {
-
-		s = "" + s;
-		while (s.length < len) {
-			s = "0" + s;
-		}
-		return s;
-	}
-
-	export function getTimestamp(): string {
-
-		const now = new Date();
-		const year = now.getFullYear();
-		const month = 1 + now.getMonth();
-		const day = now.getDate();
-		const hour = now.getHours();
-		const minutes = + now.getMinutes();
-		const seconds = now.getSeconds();
-		const milliseconds = now.getMilliseconds();
-
-		return "" + rpad("" + year, 4) + "-" + rpad("" + month, 2) + "-" + rpad("" + day, 2) +
-			" " + rpad("" + hour, 2) + ":" + rpad("" + minutes, 2) + ":" + rpad("" + seconds, 2) + "." + rpad("" + milliseconds, 3);
-	}
-}
-
-module logger {
-
-	export function trace(...args: any[]): void {
-		console.log(dateutil.getTimestamp() + " [TRACE] ", args);
-	}
-}
-
 module nodeutil {
 
 	/**
-	 * コールバックの定義
+	 * Callback definition
 	 */
 	export type SearchCallback = (e: Element | null) => boolean;
 
 	/**
-	 * 要素を検索します。
-	 * @param e 要素
-	 * @param callback ユーザー定義コールバック
+	 * Find element
+	 * @param e element
+	 * @param callback user definition callback function
 	 */
 	export function searchElement(e: Element | null, callback: SearchCallback): boolean {
 
@@ -50,6 +16,7 @@ module nodeutil {
 			return false;
 
 		if (callback(e))
+			// Exit when true returned by callback function.
 			return true;
 
 		if (e.hasChildNodes()) {
@@ -59,11 +26,9 @@ module nodeutil {
 					return true;
 			}
 		}
+
 		return false;
 	}
-}
-
-module util {
 
 	/**
 	 * HTML 要素が <INPUT> かどうかを調べます。
@@ -125,8 +90,8 @@ module util {
 	}
 
 	/**
-	 * e にフォーカスを移動します。
-	 * @param e 要素 
+	 * Set e focused.
+	 * @param e element to set focus 
 	 */
 	export function setFocus(e: Element): void {
 
@@ -139,177 +104,245 @@ module util {
 		else
 			return;
 		const rect = e.getBoundingClientRect();
-		console.log("[TRACE] フォーカス設定: type: [%s], name: [%s], id: [%s], top: [%s], left: [%s]",
+		console.log("[TRACE] Focus changed. type: [%s], name: [%s], id: [%s], top: [%s], left: [%s]",
 				e.nodeName, e.attributes["name"], e.id, rect.top, rect.left);
 	}
-}
 
-function getLeftElement(baseElement: Element | null): Element | null {
+	export function getLeftElement(baseElement: Element | null): Element | null {
 
-	// 基準要素の位置
-	const baseRect = baseElement.getBoundingClientRect();
+		// 基準要素の位置
+		const baseRect = baseElement.getBoundingClientRect();
 
-	console.log("[TRACE] 基準要素 type: [%s], name: [%s], id: [%s], top: [%s], left: [%s]",
-			baseElement.nodeName, baseElement.attributes["name"], baseElement.id, baseRect.top, baseRect.left);
+		console.log("[TRACE] 基準要素 type: [%s], name: [%s], id: [%s], top: [%s], left: [%s]",
+				baseElement.nodeName, baseElement.attributes["name"], baseElement.id, baseRect.top, baseRect.left);
 
-	// みつかった要素
-	let item: Element = null;
-	// コールバック
-	const handler: nodeutil.SearchCallback = (e: Element | null): boolean => {
-		if (!util.isForcusableElement(e))
+		// 同じ階層の要素を簡易検索
+		{
+			const ee = findPreviousSiblingControl(baseElement);
+			if (ee)
+				return ee;
+		}
+
+		// みつかった要素
+		let item: Element = null;
+		// コールバック
+		const handler: nodeutil.SearchCallback = (e: Element | null): boolean => {
+			if (!isForcusableElement(e))
+				return false;
+			const rect = e.getBoundingClientRect();
+			if (baseRect.left <= rect.left)
+				return item != null;
+			// 基準要素よりも上の要素がみつかった
+			console.log("[TRACE] element found. type: [%s], name: [%s], id: [%s], top: [%s], left: [%s]",
+					e.nodeName, e.attributes["name"], e.id, rect.top, rect.left);
+			item = e;
+			// continue.
 			return false;
-		const rect = e.getBoundingClientRect();
-		if (baseRect.left <= rect.left)
-			return item != null;
-		// 基準要素よりも上の要素がみつかった
-		console.log("[TRACE] element found. type: [%s], name: [%s], id: [%s], top: [%s], left: [%s]",
-				e.nodeName, e.attributes["name"], e.id, rect.top, rect.left);
-		item = e;
-		// continue.
-		return false;
+		}
+
+		// 要素を検索します。
+		nodeutil.searchElement(window.document.body, handler);
+		if (!item)
+			console.log("[TRACE] Not found.");
+		return item;
 	}
 
-	// 要素を検索します。
-	nodeutil.searchElement(window.document.body, handler);
-	return item;
-}
+	/**
+	 * 一つ上の要素を探します。
+	 * @param baseElement 
+	 */
+	export function getUpperElement(baseElement: Element | null): Element | null {
 
-function getPreviousElement(baseElement: Element | null): Element | null {
+		// 基準要素の位置
+		const baseRect = baseElement.getBoundingClientRect();
 
-	// 基準要素の位置
-	const baseRect = baseElement.getBoundingClientRect();
+		console.log("[TRACE] 基準要素 type: [%s], name: [%s], id: [%s], top: [%s], left: [%s]",
+				baseElement.nodeName, baseElement.attributes["name"], baseElement.id, baseRect.top, baseRect.left);
 
-	console.log("[TRACE] 基準要素 type: [%s], name: [%s], id: [%s], top: [%s], left: [%s]",
-			baseElement.nodeName, baseElement.attributes["name"], baseElement.id, baseRect.top, baseRect.left);
+		// 同じ階層の要素を簡易検索
+		{
+			const ee = findPreviousSiblingControl(baseElement);
+			if (ee)
+				return ee;
+		}
 
-	// みつかった要素
-	let item: Element = null;
-	// コールバック
-	const handler: nodeutil.SearchCallback = (e: Element | null): boolean => {
-		if (!util.isForcusableElement(e))
+		// みつかった要素
+		let item: Element = null;
+		// コールバック
+		const handler: nodeutil.SearchCallback = (e: Element | null): boolean => {
+			if (!nodeutil.isForcusableElement(e))
+				return false;
+			const rect = e.getBoundingClientRect();
+			if (baseRect.y < rect.y)
+				return item != null;
+			// 基準要素よりも上の要素がみつかった
+			console.log("[TRACE] element found. type: [%s], name: [%s], id: [%s], top: [%s], left: [%s]",
+					e.nodeName, e.attributes["name"], e.id, rect.top, rect.left);
+			item = e;
+			// continue.
 			return false;
-		const rect = e.getBoundingClientRect();
-		if (baseRect.y <= rect.y)
-			return item != null;
-		// 基準要素よりも上の要素がみつかった
-		console.log("[TRACE] element found. type: [%s], name: [%s], id: [%s], top: [%s], left: [%s]",
-				e.nodeName, e.attributes["name"], e.id, rect.top, rect.left);
-		item = e;
-		// continue.
-		return false;
+		}
+
+		// 要素を検索します。
+		nodeutil.searchElement(window.document.body, handler);
+		if (!item)
+			console.log("[TRACE] Not found.");
+		return item;
 	}
 
-	// 要素を検索します。
-	nodeutil.searchElement(window.document.body, handler);
-	return item;
-}
+	export function getLowerElement(baseElement: Element | null): Element | null {
 
-function getNextElement(baseElement: Element | null): Element | null {
+		// 基準要素の位置
+		const baseRect = baseElement.getBoundingClientRect();
 
-	// 基準要素の位置
-	const baseRect = baseElement.getBoundingClientRect();
+		console.log("[TRACE] 基準要素 type: [%s], name: [%s], id: [%s], top: [%s], left: [%s]",
+				baseElement.nodeName, baseElement.attributes["name"], baseElement.id, baseRect.top, baseRect.left);
 
-	console.log("[TRACE] 基準要素 type: [%s], name: [%s], id: [%s], top: [%s], left: [%s]",
-			baseElement.nodeName, baseElement.attributes["name"], baseElement.id, baseRect.top, baseRect.left);
+		// 同じ階層の要素を簡易検索
+		{
+			const ee = findNextSiblingControl(baseElement);
+			if (ee)
+				return ee;
+		}
 
-	// みつかった要素
-	let item: Element = null;
-	// コールバック
-	const handler: nodeutil.SearchCallback = (e: Element | null): boolean => {
-		if (!util.isForcusableElement(e))
-			return false;
-		const rect = e.getBoundingClientRect();
-		if (rect.y <= baseRect.y)
-			return false;
-		// 基準要素よりも下の要素がみつかった
-		console.log("[TRACE] element found. type: [%s], name: [%s], id: [%s], top: [%s], left: [%s]",
-				e.nodeName, e.attributes["name"], e.id, rect.top, rect.left);
-		item = e;
-		// stop.
-		return true;
+		// みつかった要素
+		let item: Element = null;
+		// コールバック
+		const handler: nodeutil.SearchCallback = (e: Element | null): boolean => {
+			if (!isForcusableElement(e))
+				return false;
+			const rect = e.getBoundingClientRect();
+			if (rect.top < baseRect.top)
+				return false;
+			// 基準要素よりも下の要素がみつかった
+			console.log("[TRACE] element found. type: [%s], name: [%s], id: [%s], top: [%s], left: [%s]",
+					e.nodeName, e.attributes["name"], e.id, rect.top, rect.left);
+			item = e;
+			// stop.
+			return true;
+		}
+
+		// 要素を検索します。
+		nodeutil.searchElement(window.document.body, handler);
+		if (!item)
+			console.log("[TRACE] Not found.");
+		return item;
 	}
 
-	// 要素を検索します。
-	nodeutil.searchElement(window.document.body, handler);
-	return item;
-}
-
-function getRightElement(baseElement: Element | null): Element | null {
-
-	// 基準要素の位置
-	const baseRect = baseElement.getBoundingClientRect();
-
-	console.log("[TRACE] 基準要素 type: [%s], name: [%s], id: [%s], top: [%s], left: [%s]",
-			baseElement.nodeName, baseElement.attributes["name"], baseElement.id, baseRect.top, baseRect.left);
-
-	// みつかった要素
-	let item: Element = null;
-	// コールバック
-	const handler: nodeutil.SearchCallback = (e: Element | null): boolean => {
-		if (!util.isForcusableElement(e))
-			return false;
-		const rect = e.getBoundingClientRect();
-		if (rect.left <= baseRect.left)
-			return false;
-		// 基準要素よりも下の要素がみつかった
-		console.log("[TRACE] element found. type: [%s], name: [%s], id: [%s], top: [%s], left: [%s]",
-				e.nodeName, e.attributes["name"], e.id, rect.top, rect.left);
-		item = e;
-		// stop.
-		return true;
+	function findPreviousSiblingControl(e: Element | null): Element | null {
+		console.log("[TRACE] 簡易検索");
+		while (true) {
+			e = e.previousElementSibling;
+			if (!e)
+				break;
+			console.log("[TRACE] 簡易検索(<): ", e);
+			if (isForcusableElement(e))
+				return e;
+		}
+		return null;
 	}
 
-	// 要素を検索します。
-	nodeutil.searchElement(window.document.body, handler);
-	return item;
+	function findNextSiblingControl(e: Element | null): Element | null {
+		console.log("[TRACE] 簡易検索");
+		while (true) {
+			e = e.nextElementSibling;
+			if (!e)
+				break;
+			console.log("[TRACE] 簡易検索(>): ", e);
+			if (isForcusableElement(e))
+				return e;
+		}
+		return null;
+	}
+
+	export function getRightElement(baseElement: Element | null): Element | null {
+
+		// 基準要素の位置
+		const baseRect = baseElement.getBoundingClientRect();
+
+		console.log("[TRACE] 基準要素 type: [%s], name: [%s], id: [%s], top: [%s], left: [%s]",
+				baseElement.nodeName, baseElement.attributes["name"], baseElement.id, baseRect.top, baseRect.left);
+
+		// 同じ階層の要素を簡易検索
+		{
+			const ee = findNextSiblingControl(baseElement);
+			if (ee)
+				return ee;
+		}
+
+		// みつかった要素
+		let item: Element = null;
+		// コールバック
+		const handler: nodeutil.SearchCallback = (e: Element | null): boolean => {
+			if (!nodeutil.isForcusableElement(e))
+				return false;
+			const rect = e.getBoundingClientRect();
+			if (rect.left < baseRect.left)
+				return false;
+			if (rect.top < baseRect.top)
+				return false;
+			// 基準要素よりも右下の要素がみつかった
+			console.log("[TRACE] element found. type: [%s], name: [%s], id: [%s], top: [%s], left: [%s]",
+					e.nodeName, e.attributes["name"], e.id, rect.top, rect.left);
+			item = e;
+			// stop.
+			return true;
+		}
+
+		// 要素を検索します。
+		nodeutil.searchElement(window.document.body, handler);
+		if (!item)
+			console.log("[TRACE] Not found.");
+		return item;
+	}
 }
 
 function _onkeydown(this: GlobalEventHandlers, ev: KeyboardEvent) {
 
 	if (ev.key === "ArrowUp") {
 		// 基準となる要素を検索します。
-		const activeElement = util.getActiveElement();
+		const activeElement = nodeutil.getActiveElement();
 		if (!activeElement)
 			return;
 		// 手前の要素を探します。
-		const previousElement = getPreviousElement(activeElement);
+		const previousElement = nodeutil.getUpperElement(activeElement);
 		if (!previousElement)
 			return;
-		util.setFocus(previousElement);
+		nodeutil.setFocus(previousElement);
 	}
 	else if (ev.key === "ArrowDown") {
 		// 基準となる要素を検索します。
-		const activeElement = util.getActiveElement();
+		const activeElement = nodeutil.getActiveElement();
 		if (!activeElement)
 			return;
 		// 手前の要素を探します。
-		const previousElement = getNextElement(activeElement);
+		const previousElement = nodeutil.getLowerElement(activeElement);
 		if (!previousElement)
 			return;
-		util.setFocus(previousElement);
+		nodeutil.setFocus(previousElement);
 	}
 	else if (ev.key === "ArrowLeft") {
 		// 基準となる要素を検索します。
-		const activeElement = util.getActiveElement();
+		const activeElement = nodeutil.getActiveElement();
 		if (!activeElement)
 			return;
 		// 手前の要素を探します。
-		const previousElement = getPreviousElement(activeElement);
+		const previousElement = nodeutil.getLeftElement(activeElement);
 		if (!previousElement)
 			return;
-		util.setFocus(previousElement);
+		nodeutil.setFocus(previousElement);
 	}
 	else if (ev.key === "ArrowRight") {
 		// 基準となる要素を検索します。
-		const activeElement = util.getActiveElement();
+		const activeElement = nodeutil.getActiveElement();
 		if (!activeElement) {
 			return;
 		}
 		// 手前の要素を探します。
-		const previousElement = getNextElement(activeElement);
+		const previousElement = nodeutil.getRightElement(activeElement);
 		if (!previousElement)
 			return;
-		util.setFocus(previousElement);
+		nodeutil.setFocus(previousElement);
 	}
 }
 
