@@ -177,7 +177,7 @@ module nodeutil {
 			const rect = e.getBoundingClientRect();
 			if (baseElement === e)
 				return false;
-			if (baseRect.y < rect.y)
+			if (baseRect.top < rect.top)
 				return item != null;
 			// 基準要素よりも上の要素がみつかった
 			console.log("[TRACE] element found. type: [%s], name: [%s], id: [%s], top: [%s], left: [%s]",
