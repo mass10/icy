@@ -1,3 +1,6 @@
+/**
+ * ノード操作に関するユーティリティです。
+ */
 module nodeutil {
 
 	/**
@@ -6,7 +9,7 @@ module nodeutil {
 	export type SearchCallback = (e: Element | null) => boolean;
 
 	/**
-	 * Find element
+	 * 要素を検索します。
 	 * @param e element
 	 * @param callback user definition callback function
 	 */
@@ -90,8 +93,8 @@ module nodeutil {
 	}
 
 	/**
-	 * Set e focused.
-	 * @param e element to set focus 
+	 * 要素にフォーカスを移します。
+	 * @param e 要素
 	 */
 	export function setFocus(e: Element): void {
 
@@ -108,6 +111,10 @@ module nodeutil {
 			e.nodeName, e.attributes["name"], e.id, rect.top, rect.left);
 	}
 
+	/**
+	 * 要素の左側にある要素を探します。
+	 * @param baseElement 
+	 */
 	export function getLeftElement(baseElement: Element | null): Element | null {
 
 		// 基準要素の位置
@@ -124,7 +131,7 @@ module nodeutil {
 		}
 
 		// みつかった要素
-		let item: Element = null;
+		let foundItem: Element = null;
 		// コールバック
 		const handler: nodeutil.SearchCallback = (e: Element | null): boolean => {
 			if (!isForcusableElement(e))
@@ -133,20 +140,20 @@ module nodeutil {
 			if (baseElement === e)
 				return false;
 			if (baseRect.left <= rect.left)
-				return item != null;
+				return foundItem != null;
 			// 基準要素よりも上の要素がみつかった
 			console.log("[TRACE] element found. type: [%s], name: [%s], id: [%s], top: [%s], left: [%s]",
 				e.nodeName, e.attributes["name"], e.id, rect.top, rect.left);
-			item = e;
+			foundItem = e;
 			// continue.
 			return false;
 		}
 
 		// 要素を検索します。
 		nodeutil.searchElement(window.document.body, handler);
-		if (!item)
+		if (!foundItem)
 			console.log("[TRACE] Not found.");
-		return item;
+		return foundItem;
 	}
 
 	/**
@@ -169,7 +176,7 @@ module nodeutil {
 		}
 
 		// みつかった要素
-		let item: Element = null;
+		let foundItem: Element = null;
 		// コールバック
 		const handler: nodeutil.SearchCallback = (e: Element | null): boolean => {
 			if (!nodeutil.isForcusableElement(e))
@@ -178,20 +185,20 @@ module nodeutil {
 			if (baseElement === e)
 				return false;
 			if (baseRect.top < rect.top)
-				return item != null;
+				return foundItem != null;
 			// 基準要素よりも上の要素がみつかった
 			console.log("[TRACE] element found. type: [%s], name: [%s], id: [%s], top: [%s], left: [%s]",
 				e.nodeName, e.attributes["name"], e.id, rect.top, rect.left);
-			item = e;
+			foundItem = e;
 			// continue.
 			return false;
 		}
 
 		// 要素を検索します。
 		nodeutil.searchElement(window.document.body, handler);
-		if (!item)
+		if (!foundItem)
 			console.log("[TRACE] Not found.");
-		return item;
+		return foundItem;
 	}
 
 	export function getLowerElement(baseElement: Element | null): Element | null {
@@ -210,7 +217,7 @@ module nodeutil {
 		}
 
 		// みつかった要素
-		let item: Element = null;
+		let foundItem: Element = null;
 		// コールバック
 		const handler: nodeutil.SearchCallback = (e: Element | null): boolean => {
 			if (!isForcusableElement(e))
@@ -223,16 +230,16 @@ module nodeutil {
 			// 基準要素よりも下の要素がみつかった
 			console.log("[TRACE] element found. type: [%s], name: [%s], id: [%s], top: [%s], left: [%s]",
 				e.nodeName, e.attributes["name"], e.id, rect.top, rect.left);
-			item = e;
+			foundItem = e;
 			// stop.
 			return true;
 		}
 
 		// 要素を検索します。
 		nodeutil.searchElement(window.document.body, handler);
-		if (!item)
+		if (!foundItem)
 			console.log("[TRACE] Not found.");
-		return item;
+		return foundItem;
 	}
 
 	function findPreviousSiblingControl(e: Element | null): Element | null {
@@ -277,7 +284,7 @@ module nodeutil {
 		}
 
 		// みつかった要素
-		let item: Element = null;
+		let foundItem: Element = null;
 		// コールバック
 		const handler: nodeutil.SearchCallback = (e: Element | null): boolean => {
 			if (!nodeutil.isForcusableElement(e))
@@ -292,16 +299,16 @@ module nodeutil {
 			// 基準要素よりも右下の要素がみつかった
 			console.log("[TRACE] element found. type: [%s], name: [%s], id: [%s], top: [%s], left: [%s]",
 				e.nodeName, e.attributes["name"], e.id, rect.top, rect.left);
-			item = e;
+			foundItem = e;
 			// stop.
 			return true;
 		}
 
 		// 要素を検索します。
 		nodeutil.searchElement(window.document.body, handler);
-		if (!item)
+		if (!foundItem)
 			console.log("[TRACE] Not found.");
-		return item;
+		return foundItem;
 	}
 }
 
