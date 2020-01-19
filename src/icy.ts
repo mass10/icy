@@ -1,4 +1,4 @@
-import 'platform';
+import { nodeutil } from "nodeutil";
 
 function _onkeydown(this: GlobalEventHandlers, ev: KeyboardEvent) {
 
@@ -49,11 +49,12 @@ function _onkeydown(this: GlobalEventHandlers, ev: KeyboardEvent) {
 	}
 }
 
-module ttapplication {
+module icy {
 
 	export function run() {
 
-		console.log("[TARCE] <ttapplication.run()>", platform);
+		console.log("#################################### START ICY ###");
+		console.log("[TARCE] <icy.run()>", platform);
 
 		if (window.onkeydown) {
 			const original_operation = window.onkeydown;
@@ -70,4 +71,4 @@ module ttapplication {
 	}
 }
 
-ttapplication.run();
+icy.run();
