@@ -1,7 +1,7 @@
 /**
  * ノード操作に関するユーティリティです。
  */
-module nodeutil {
+export module nodeutil {
 
 	export function isIE(): boolean {
 		return platform.description === "IE";
