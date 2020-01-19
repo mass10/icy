@@ -1,0 +1,9 @@
+{
+	"compilerOptions": {
+		"outDir": "dist",
+		"outFile": "dist/icy.js"
+	},
+	"include": [
+		"src/**/*"
+	]
+}
