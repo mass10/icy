@@ -1,4 +1,5 @@
 import { nodeutil } from "nodeutil";
+import platform from "platform";
 
 function _onkeydown(this: GlobalEventHandlers, ev: KeyboardEvent) {
 
@@ -49,7 +50,7 @@ function _onkeydown(this: GlobalEventHandlers, ev: KeyboardEvent) {
 	}
 }
 
-module icy {
+export module icy {
 
 	export function run() {
 
