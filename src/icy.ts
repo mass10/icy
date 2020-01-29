@@ -1,4 +1,4 @@
-import { nodeutil } from "nodeutil";
+import { nodeutil } from "./nodeutil";
 import platform from "platform";
 
 function _onkeydown(this: GlobalEventHandlers, ev: KeyboardEvent) {
