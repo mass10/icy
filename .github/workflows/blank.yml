@@ -13,6 +13,8 @@ jobs:
         run: echo Hello, world!
       - name: Build script
         run: yarn install && yarn tsc
+      - name: Run test
+        run: yarn test
       - name: Run a multi-line script
         run: |
           echo Add other actions to build,
