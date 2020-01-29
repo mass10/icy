@@ -8,4 +8,4 @@
 
 # CircleCI
 
-https://app.circleci.com/jobs/github/mass10/icy
+https://app.circleci.com/github/mass10/icy/pipelines
