@@ -24,10 +24,3 @@ module dateutil {
 			" " + rpad("" + hour, 2) + ":" + rpad("" + minutes, 2) + ":" + rpad("" + seconds, 2) + "." + rpad("" + milliseconds, 3);
 	}
 }
-
-module logger {
-
-	export function trace(...args: any[]): void {
-		console.log(dateutil.getTimestamp() + " [TRACE] ", args);
-	}
-}
