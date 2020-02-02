@@ -6,7 +6,7 @@ jobs:
 
     build-1:
 
-        name: build-1 のビルドステップ
+        name: "ビルド: build-1"
 
         runs-on: ubuntu-latest
 
