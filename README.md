@@ -10,3 +10,11 @@
 # CircleCI
 
 https://app.circleci.com/github/mass10/icy/pipelines
+
+# Jest
+
+```
+yarn add jest # Jest 本体
+yarn add @types/jest # Jest の型情報
+yarn add ts-jest # Jest 用の TypeScript プリプロセッサ。インストール時に Python が必要です。
+```
