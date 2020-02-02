@@ -12,5 +12,5 @@ jobs:
             - uses: actions/checkout@v1
             - name: \#\#\# Build script \#\#\#
                 run: yarn install && yarn tsc
-            - name: "### Run test ###"
+            - name: ### Run test ###
                 run: yarn test
