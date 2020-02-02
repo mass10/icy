@@ -1,4 +1,5 @@
 ![https://github.com/mass10/icy/actions](https://github.com/mass10/icy/workflows/CI/badge.svg)
+![https://github.com/mass10/icy/workflows/CI/badge.svg](https://github.com/mass10/icy/actions)
 [![CircleCI](https://circleci.com/gh/mass10/icy.svg?style=svg)](https://circleci.com/gh/mass10/icy)
 
 
