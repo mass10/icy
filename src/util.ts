@@ -1,4 +1,4 @@
-module dateutil {
+export module util {
 
 	export function rpad(s: string, len: number): string {
 
@@ -22,5 +22,9 @@ module dateutil {
 
 		return "" + rpad("" + year, 4) + "-" + rpad("" + month, 2) + "-" + rpad("" + day, 2) +
 			" " + rpad("" + hour, 2) + ":" + rpad("" + minutes, 2) + ":" + rpad("" + seconds, 2) + "." + rpad("" + milliseconds, 3);
+	}
+
+	export function getTrue(): boolean {
+		return true;
 	}
 }
