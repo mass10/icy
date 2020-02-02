@@ -64,9 +64,9 @@
     "forceConsistentCasingInFileNames": true  /* Disallow inconsistently-cased references to the same file. */
   },
   "include": [
-    // "node_modules/platform/platform.js",
-    "src/**/*.ts",
-    "src2/**/*.ts"
-    // "node_modules/requirejs/require.js",
+    "src/**/*.ts"
+  ],
+  "exclude": [
+    "src/**/*.spec.ts"
   ]
 }
