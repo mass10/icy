@@ -4,8 +4,9 @@ on: [push]
 
 jobs:
 
-    - name: "[name] ### ビルドジョブ ###"
-      build:
+    build-1:
+
+        name: build-1 のビルドステップ
 
         runs-on: ubuntu-latest
 
