@@ -20,3 +20,16 @@ jobs:
 
             - name: "### Run test ###"
               run: yarn test
+
+    build-2:
+
+        name: "post build-1"
+
+        needs: [ "build-1" ]
+
+        runs-on: ubuntu-latest
+
+        steps:
+
+            - name: "### ビルド後の操作 ###"
+              run: echo Ok.
