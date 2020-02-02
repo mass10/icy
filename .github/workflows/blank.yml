@@ -15,15 +15,18 @@ jobs:
             - name: "### チェックアウト ###"
               uses: actions/checkout@v1
 
-            - name: "### Build script ###"
-              run: yarn install && yarn tsc
+            - name: "### パッケージをインストールします ###"
+              run: yarn install
 
-            - name: "### Run test ###"
+            - name: "### アプリケーションをビルドします ###"
+              run: yarn tsc
+
+            - name: "### アプリケーションをテストします ###"
               run: yarn test
 
-    build-2:
+    deploy-1:
 
-        name: "post build-1"
+        name: "デプロイ: deploy-1"
 
         needs: [ "build-1" ]
 
@@ -31,5 +34,5 @@ jobs:
 
         steps:
 
-            - name: "### ビルド後の操作 ###"
+            - name: "### アプリケーションをデプロイします ###"
               run: echo Ok.
