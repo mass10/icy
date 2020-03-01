@@ -3,6 +3,9 @@
  */
 export module nodeutil {
 
+	/**
+	 * ブラウザの評価 - Microsoft Internet Explorer
+	 */
 	export function isIE(): boolean {
 		return platform.description === "IE";
 	}
@@ -18,14 +21,11 @@ export module nodeutil {
 	 * @param callback user definition callback function
 	 */
 	export function searchElement(e: Element, callback: SearchCallback): boolean {
-
 		if (!e)
 			return false;
-
 		if (callback(e))
 			// Exit when true returned by callback function.
 			return true;
-
 		if (e.hasChildNodes()) {
 			for (let i = 0; i < e.childElementCount; i++) {
 				const child = e.children[i];
@@ -33,7 +33,6 @@ export module nodeutil {
 					return true;
 			}
 		}
-
 		return false;
 	}
 
@@ -62,11 +61,19 @@ export module nodeutil {
 	}
 
 	/**
+	 * HTML 要素が <BUTTON> かどうかを調べます。
+	 * @param e 
+	 */
+	export function isButtonElement(e: Element | null): e is HTMLButtonElement {
+		return e?.nodeName === "BUTTON";
+	}
+
+	/**
 	 * HTML 要素がフォーカス対象かどうかを調べます。
 	 * @param e 不明な要素
 	 */
 	export function isForcusableElement(e: Element | null): boolean {
-		return isInputElement(e) || isTextareaElement(e) || isAnchorElement(e);
+		return isInputElement(e) || isTextareaElement(e) || isAnchorElement(e) || isButtonElement(e);
 	}
 
 	/**
@@ -83,10 +90,10 @@ export module nodeutil {
 		// 最初の要素を探します。フォーカス可能な要素に限ります。
 		let element = window.document.firstElementChild;
 		while (element) {
-			if (element.nodeName === "A") break;
-			if (element.nodeName === "BUTTON") break;
-			if (element.nodeName === "INPUT") break;
-			if (element.nodeName === "TEXTAREA") break;
+			if (isAnchorElement(element)) break;
+			if (isButtonElement(element)) break;
+			if (isInputElement(element)) break;
+			if (isTextareaElement(element)) break;
 			element = element.nextElementSibling;
 		}
 		if (!element) {
@@ -102,14 +109,21 @@ export module nodeutil {
 	 */
 	export function setFocus(e: Element): void {
 
-		if (isInputElement(e))
+		if (isInputElement(e)) {
 			e.focus({ preventScroll: false });
-		else if (isTextareaElement(e))
+		}
+		else if (isTextareaElement(e)) {
 			e.focus({ preventScroll: false });
-		else if (isAnchorElement(e))
+		}
+		else if (isAnchorElement(e)) {
 			e.focus({ preventScroll: false });
-		else
+		}
+		else if (isButtonElement(e)) {
+			e.focus({ preventScroll: false });
+		}
+		else {
 			return;
+		}
 		const rect = e.getBoundingClientRect();
 		console.log("[TRACE] Focus changed. type: [%s], name: [%s], id: [%s], top: [%s], left: [%s]",
 			e.nodeName, e.attributes.getNamedItem("name"), e.id, rect.top, rect.left);
@@ -183,7 +197,7 @@ export module nodeutil {
 		let foundItem: Element | null = null;
 		// コールバック
 		const handler: nodeutil.SearchCallback = (e: Element): boolean => {
-			if (!nodeutil.isForcusableElement(e))
+			if (!isForcusableElement(e))
 				return false;
 			const rect = e.getBoundingClientRect();
 			if (baseElement === e)
@@ -205,6 +219,10 @@ export module nodeutil {
 		return foundItem;
 	}
 
+	/**
+	 * 一つ下の要素を探します。
+	 * @param baseElement
+	 */
 	export function getLowerElement(baseElement: Element): Element | null {
 
 		// 基準要素の位置
@@ -246,6 +264,10 @@ export module nodeutil {
 		return foundItem;
 	}
 
+	/**
+	 * 手前の同レベル要素を探します。
+	 * @param e 
+	 */
 	function findPreviousSiblingControl(e: Element | null): Element | null {
 		while (e) {
 			e = e.previousElementSibling;
@@ -259,6 +281,10 @@ export module nodeutil {
 		return null;
 	}
 
+	/**
+	 * 次の同レベル要素を探します。
+	 * @param e 
+	 */
 	function findNextSiblingControl(e: Element | null): Element | null {
 		while (e) {
 			e = e.nextElementSibling;
@@ -272,6 +298,10 @@ export module nodeutil {
 		return null;
 	}
 
+	/**
+	 * 右の要素を探します。
+	 * @param baseElement 
+	 */
 	export function getRightElement(baseElement: Element): Element | null {
 
 		// 基準要素の位置
